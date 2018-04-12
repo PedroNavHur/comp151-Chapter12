@@ -24,4 +24,9 @@
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="pay.out">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

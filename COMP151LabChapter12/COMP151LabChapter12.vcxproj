@@ -152,6 +152,9 @@
   <ItemGroup>
     <Text Include="payroll.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="pay.out" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
