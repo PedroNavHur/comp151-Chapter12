@@ -15,8 +15,9 @@ using namespace std;
 // V1.00
 
 const int NAMESIZE = 15;
-struct  budget  //declare a structure to hold name and financial information
-{
+struct  budget {
+
+	// Stuff
 	char name[NAMESIZE + 1];
 	float income;       // person's monthly income
 	float rent;         // person's monthly rent
@@ -25,9 +26,44 @@ struct  budget  //declare a structure to hold name and financial information
 	float miscell;      // person's other bills
 	float net;          // person's net money after bills are paid
 
+	//Populates a budget
+	void getBudget(void) {
+		cout << "Enter the following information" << endl;
+		cout << "Person's name: ";
+		cin.getline(name, NAMESIZE);
+		cout << "Income: ";
+		cin >> income;
+		cout << "Rent: ";
+		cin >> rent;
+		cout << "Food: ";
+		cin >> food;
+		cout << "Utilities: ";
+		cin >> utilities;
+		cout << "Miscellaneous: ";
+		cin >> miscell;
+
+		float expenses = rent + food + utilities + miscell;
+		net = income - expenses;
+	}
+	
+	//Sends the budget to the stream sent
+	void sendBudget(ostream &outdata) {
+		outdata
+			<< setw(20) << name
+			<< setw(10) << income
+			<< setw(10) << rent
+			<< setw(10) << food
+			<< setw(10) << utilities
+			<< "          "
+			<< setw(10) << miscell
+			<< setw(10) << net
+			<< endl;
+	}
+
 };
 
-//void getBudget(vector<budget> &);
+void getUserData(vector<budget> &);
+void outData(vector<budget> &, ostream &);
 
 int main()
 
@@ -43,62 +79,33 @@ int main()
 	outdata << left << fixed << setprecision(2);        // left indicates left
 														// justified for fields
 
-	budget person;   //defines person to be a record
-	//vector<budget> persons;
+	// vector of person budgets
+	vector<budget> persons;
 
-	cout << "Enter the following information" << endl;
-	cout << "Person's name: ";
-	cin.getline(person.name, NAMESIZE);
-	cout << "Income :";
-	cin >> person.income;
+	// Gets the Data from the user
+	getUserData(persons);
+
+	// Sends the data to outdata
+	outData(persons, outdata);
+
+	//int n = persons.size();
+
+	//// write this record to the file
+	//// Fill IN CODE TO WRITE THE RECORD TO THE FILE indata (one instruction)
+	//for (int i = 0; i < n; i++) {
+	//	indata.write((const char *)&persons[i], sizeof persons[i]);
+	//}
+	//indata.close();
 
 
-	// FILL IN CODE TO READ IN THE REST OF THE FIELDS:
-	// rent, food, utilities AND miscell TO THE person RECORD
-	cout << "Rent: ";
-	cin >> person.rent;
-	cout << "Food: ";
-	cin >> person.food;
-	cout << "Utilities: ";
-	cin >> person.utilities;
-	cout << "Miscellaneous: ";
-	cin >> person.miscell;
+	//// FILL IN THE CODE TO REOPEN THE indata FILE, NOW AS AN INPUT FILE.
+	//indata.open("income.dat", ios::in | ios::binary);
 
-	// find the net field
-	// FILL IN CODE TO DETERMINE NET INCOME (income - expenses)
-	float expenses = person.rent + person.food + person.utilities + person.miscell;
-	person.net = person.income - expenses;
-
-	// write this record to the file
-	// Fill IN CODE TO WRITE THE RECORD TO THE FILE indata (one instruction)
-	indata.write((const char *)&person, sizeof person);
-
-	indata.close();
-
-	// FILL IN THE CODE TO REOPEN THE indata FILE, NOW AS AN INPUT FILE.
-	indata.open("income.dat", ios::in | ios::binary);
-
-	// FILL IN THE CODE TO READ THE RECORD FROM indata AND PLACE IT IN THE 
-	// person RECORD (one instruction)
-	indata.read((char *)&person, sizeof person);
-
-	// write information to output file
-	outdata << setw(20) << "Name" << setw(10) << "Income" << setw(10) << "Rent"
-		<< setw(10) << "Food" << setw(15) << "Utilities" << setw(15)
-		<< "Miscellaneous" << setw(10) << "Net Money" << endl << endl;
-
-	// FILL IN CODE TO WRITE INDIVIDUAL FIELD INFORMATION OF THE RECORD TO 
-	// THE outdata FILE.(several instructions)
-	outdata
-		<< setw(20) << person.name
-		<< setw(10) << person.income
-		<< setw(10) << person.rent
-		<< setw(10) << person.food
-		<< setw(10) << person.utilities
-		<< "          "
-		<< setw(10) << person.miscell
-		<< setw(10) << person.net
-		<< endl;
+	//// FILL IN THE CODE TO READ THE RECORD FROM indata AND PLACE IT IN THE 
+	//// person RECORD (one instruction)
+	//for (int i = 0; i < n; i++) {
+	//	indata.read((char *)&persons[i], sizeof persons[i]);
+	//}
 
 	outdata.close();
 	indata.close();
@@ -106,21 +113,41 @@ int main()
 	return 0;
 }
 
-//void getBudget(vector<budget> &persons) {
-//	int n = persons.size();
-//	persons.push_back(budget());
-//
-//	cout << "Enter the following information" << endl;
-//	cout << "Person's name: ";
-//	cin.getline(persons[n].name, NAMESIZE);
-//	cout << "Income: ";
-//	cin >> persons[n].income;
-//	cout << "Rent: ";
-//	cin >> persons[n].rent;
-//	cout << "Food: ";
-//	cin >> persons[n].food;
-//	cout << "Utilities: ";
-//	cin >> persons[n].utilities;
-//	cout << "Miscellaneous: ";
-//	cin >> persons[n].miscell;
-//}
+void getUserData(vector<budget> &persons) {
+	int x = 0;
+	persons.push_back(budget());
+	persons[x].getBudget();
+
+	char getMore;
+	cout << "Enter a Y if you would like to input more data" << endl;
+	cin >> getMore;
+
+	while (getMore == 'Y') {
+
+		cin.ignore();
+		x++;
+		persons.push_back(budget());
+		persons[x].getBudget();
+
+		cout << "Enter a Y if you would like to input more data" << endl;
+		cin >> getMore;
+	}
+}
+
+void outData(vector<budget> &persons, ostream &outdata) {
+
+	outdata
+		<< setw(20) << "Name"
+		<< setw(10) << "Income"
+		<< setw(10) << "Rent"
+		<< setw(10) << "Food"
+		<< setw(15) << "Utilities"
+		<< setw(15) << "Miscellaneous"
+		<< setw(10) << "Net Money"
+		<< endl << endl;
+
+	int n = persons.size();
+	for (size_t i = 0; i < n; i++) {
+		persons[i].sendBudget(outdata);
+	}
+}
