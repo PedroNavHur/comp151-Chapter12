@@ -45,7 +45,7 @@ struct  budget {
 		float expenses = rent + food + utilities + miscell;
 		net = income - expenses;
 	}
-	
+
 	//Sends the budget to the stream sent
 	void sendBudget(ostream &outdata) {
 		outdata
@@ -64,10 +64,11 @@ struct  budget {
 
 void getUserData(vector<budget> &);
 void outData(vector<budget> &, ostream &);
+void saveData(vector<budget> &, fstream &);
+void loadData(vector<budget> &, fstream &);
 
-int main()
 
-{
+int main() {
 	fstream indata;
 	ofstream outdata;                                   // output file of
 														// student.
@@ -85,29 +86,20 @@ int main()
 	// Gets the Data from the user
 	getUserData(persons);
 
+	// Writes records to the file
+	saveData(persons, indata);
+	indata.close();
+
+	// Opening data file
+	indata.open("income.dat", ios::in | ios::binary);
+
+	// Reads records to the file
+	loadData(persons, indata);
+
 	// Sends the data to outdata
 	outData(persons, outdata);
-
-	//int n = persons.size();
-
-	//// write this record to the file
-	//// Fill IN CODE TO WRITE THE RECORD TO THE FILE indata (one instruction)
-	//for (int i = 0; i < n; i++) {
-	//	indata.write((const char *)&persons[i], sizeof persons[i]);
-	//}
-	//indata.close();
-
-
-	//// FILL IN THE CODE TO REOPEN THE indata FILE, NOW AS AN INPUT FILE.
-	//indata.open("income.dat", ios::in | ios::binary);
-
-	//// FILL IN THE CODE TO READ THE RECORD FROM indata AND PLACE IT IN THE 
-	//// person RECORD (one instruction)
-	//for (int i = 0; i < n; i++) {
-	//	indata.read((char *)&persons[i], sizeof persons[i]);
-	//}
-
 	outdata.close();
+
 	indata.close();
 
 	return 0;
@@ -149,5 +141,20 @@ void outData(vector<budget> &persons, ostream &outdata) {
 	int n = persons.size();
 	for (size_t i = 0; i < n; i++) {
 		persons[i].sendBudget(outdata);
+	}
+}
+
+void saveData(vector<budget> &persons, fstream &indata) {
+	int n = persons.size();
+	for (int i = 0; i < n; i++) {
+		indata.write((const char *)&persons[i], sizeof persons[i]);
+	}
+}
+
+void loadData(vector<budget> &persons, fstream &indata) {
+	int i = 0;
+	int n = persons.size();
+	while ((i < n) && indata.read((char *)&persons[i], sizeof persons[i])){
+		i++;
 	}
 }
